@@ -21,5 +21,4 @@ describe("User authenticates", () => {
     });
     cy.get("#message").should("contain", "You are currently logged in as user@mail.com");
   });
-
 });
