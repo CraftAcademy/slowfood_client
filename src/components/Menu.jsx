@@ -4,7 +4,8 @@ import axios from "axios";
 class Menu extends Component {
   state = {
     products: [],
-    orderMessage: null
+    orderMessage: {},
+    orderId: null
   }
 
   componentDidMount = async () => {
@@ -14,13 +15,19 @@ class Menu extends Component {
 
   addToOrder = async (event) => {
     let id = event.target.parentElement.dataset.id
-    let response = await axios.post('http://localhost:3000/api/v1/orders', { id: id } )
-    this.setState({orderMessage: response.data.message})
+
+    let response
+    if (this.state.orderId) {
+      response = await axios.put(`http://localhost:3000/api/v1/orders/${this.state.orderId}`, { product_id: id })
+    } else {
+      response = await axios.post('http://localhost:3000/api/v1/orders', { product_id: id })
+    }
+
+    this.setState({ orderMessage: { id: id, message: response.data.message }, orderId: response.data.order_id })
   }
 
   render() {
     let menu
-    let message
     this.state.products && (
       menu = this.state.products.map(product => {
         return (
@@ -29,23 +36,23 @@ class Menu extends Component {
             id={`product-${product.id}`}
             data-id={product.id}
             data-price={product.price}
-          >            
+          >
             <p id={"product-name"}>{product.name}</p>
+
             {`${product.description} ${product.price}`}
-            <button onClick={this.addToOrder}>Add to order</button>
+
+            {this.props.authenticated && <button onClick={this.addToOrder}>Add to order</button>}
+            
+            {parseInt(this.state.orderMessage.id) === product.id &&
+              <p id='order-message'>{this.state.orderMessage.message}</p>}
           </div>
         )
       })
     )
 
-    this.state.orderMessage && (
-      message = <p id="order-message">{this.state.orderMessage}</p>
-    )
-
     return (
       <>
         <h2>Menu</h2>
-        {message}
         <ul id="menu">
           {menu}
         </ul>
