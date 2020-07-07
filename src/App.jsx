@@ -26,7 +26,9 @@ class App extends Component {
       <>
         {login}
         <h1>Slowfood</h1>
-        <Menu />
+        <Menu 
+          authenticated={this.state.authenticated}
+        />
       </>
     )
   }
