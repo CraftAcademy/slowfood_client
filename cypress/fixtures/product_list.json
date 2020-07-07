@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name":"Pizza",
+      "description": "Amazing Pizza",
+      "price": 13.50,
+      "category": "entree"
+    },
+    {
+      "id": 2,
+      "name":"Nachos",
+      "description":"Crispy nachos.",
+      "price": 4.00,
+      "category": "starter"
+    },
+    {
+      "id": 3,
+      "name":"Pie",
+      "description":"Ice cold Pie.",
+      "price": 3.75,
+      "category": "dessert"
+    }
+  ]
+}
