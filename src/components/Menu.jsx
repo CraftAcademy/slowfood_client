@@ -5,7 +5,8 @@ class Menu extends Component {
   state = {
     products: [],
     orderMessage: {},
-    orderId: null
+    orderDetails: {},
+    showOrder: false
   }
 
   componentDidMount = async () => {
@@ -24,8 +25,8 @@ class Menu extends Component {
     }
 
     let response
-    if (this.state.orderId) {
-      response = await axios.put(`/orders/${this.state.orderId}`, {
+    if (this.state.orderDetails.hasOwnProperty('id')) {
+      response = await axios.put(`/orders/${this.state.orderDetails.id}`, {
         product_id: productId
       }, {
         headers: headers
@@ -43,12 +44,13 @@ class Menu extends Component {
         message: response.data.message, 
         id: productId
       },
-      orderId: response.data.order.id
+      orderDetails: response.data.order
     })
   }
 
   render() {
     let menu
+    let orderDetails
     this.state.products && (
       menu = this.state.products.map(product => {
         return (
@@ -70,9 +72,32 @@ class Menu extends Component {
       })
     )
 
+    this.state.showOrder && (
+      orderDetails = this.state.orderDetails.products.map((product) => {
+        return <li key={product.name}>{`${product.amount} x ${product.name}`}</li>
+      })
+    )
+
     return (
       <>
         <h2>Menu</h2>
+
+        {
+          this.state.orderDetails.hasOwnProperty('products') && 
+            <button onClick={() => this.setState({ showOrder: !this.state.showOrder })}>View order</button>
+        }
+
+        {
+          this.state.showOrder == true && 
+          <>
+            <ul id="order-details">
+              {orderDetails}
+            </ul>
+            <p>Your total is {this.state.orderDetails.total}</p>
+          </>
+        }
+
+
         <ul id="menu">
           {menu}
         </ul>
